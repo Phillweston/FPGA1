@@ -2,41 +2,41 @@
 `timescale 1ns / 1ps
 
 module serializer_10_to_1(
-    input           reset,              // ¸´Î»,¸ßÓĞĞ§
-    input           paralell_clk,       // ÊäÈë²¢ĞĞÊı¾İÊ±ÖÓ
-    input           serial_clk_5x,      // ÊäÈë´®ĞĞÊı¾İÊ±ÖÓ
-    input   [9:0]   paralell_data,      // ÊäÈë²¢ĞĞÊı¾İ
+    input           reset,              // å¤ä½,é«˜æœ‰æ•ˆ
+    input           paralell_clk,       // è¾“å…¥å¹¶è¡Œæ•°æ®æ—¶é’Ÿ
+    input           serial_clk_5x,      // è¾“å…¥ä¸²è¡Œæ•°æ®æ—¶é’Ÿ
+    input   [9:0]   paralell_data,      // è¾“å…¥å¹¶è¡Œæ•°æ®
 
-    output 			serial_data_out     // Êä³ö´®ĞĞÊı¾İ
+    output 			serial_data_out     // è¾“å‡ºä¸²è¡Œæ•°æ®
     );
-    
+
 //wire define
-wire		cascade1;     //ÓÃÓÚÁ½¸öOSERDESE2¼¶ÁªµÄĞÅºÅ
+wire		cascade1;     //ç”¨äºä¸¤ä¸ªOSERDESE2çº§è”çš„ä¿¡å·
 wire		cascade2;
-  
+
 //*****************************************************
 //**                    main code
 //***************************************************** 
-    
-//Àı»¯OSERDESE2Ô­Óï£¬ÊµÏÖ²¢´®×ª»»,MasterÄ£Ê½
+
+//ä¾‹åŒ–OSERDESE2åŸè¯­ï¼Œå®ç°å¹¶ä¸²è½¬æ¢,Masteræ¨¡å¼
 OSERDESE2 #(
-    .DATA_RATE_OQ   ("DDR"),       // ÉèÖÃË«±¶Êı¾İËÙÂÊ
+    .DATA_RATE_OQ   ("DDR"),       // è®¾ç½®åŒå€æ•°æ®é€Ÿç‡
     .DATA_RATE_TQ   ("SDR"),       // DDR, BUF, SDR
-    .DATA_WIDTH     (10),           // ÊäÈëµÄ²¢ĞĞÊı¾İ¿í¶ÈÎª10bit
-    .SERDES_MODE    ("MASTER"),    // ÉèÖÃÎªMaster£¬ÓÃÓÚ10bit¿í¶ÈÀ©Õ¹
+    .DATA_WIDTH     (10),           // è¾“å…¥çš„å¹¶è¡Œæ•°æ®å®½åº¦ä¸º10bit
+    .SERDES_MODE    ("MASTER"),    // è®¾ç½®ä¸ºMasterï¼Œç”¨äº10bitå®½åº¦æ‰©å±•
     .TBYTE_CTL      ("FALSE"),     // Enable tristate byte operation (FALSE, TRUE)
     .TBYTE_SRC      ("FALSE"),     // Tristate byte source (FALSE, TRUE)
     .TRISTATE_WIDTH (1)             // 3-state converter width (1,4)
 )
 OSERDESE2_Master (
-    .CLK        (serial_clk_5x),    // ´®ĞĞÊı¾İÊ±ÖÓ,5±¶Ê±ÖÓÆµÂÊ
-    .CLKDIV     (paralell_clk),     // ²¢ĞĞÊı¾İÊ±ÖÓ
+    .CLK        (serial_clk_5x),    // ä¸²è¡Œæ•°æ®æ—¶é’Ÿ,5å€æ—¶é’Ÿé¢‘ç‡
+    .CLKDIV     (paralell_clk),     // å¹¶è¡Œæ•°æ®æ—¶é’Ÿ
     .RST        (reset),            // 1-bit input: Reset
     .OCE        (1'b1),             // 1-bit input: Output data clock enable
-    
-    .OQ         (serial_data_out),  // ´®ĞĞÊä³öÊı¾İ
-    
-    .D1         (paralell_data[0]), // D1 - D8: ²¢ĞĞÊı¾İÊäÈë
+
+    .OQ         (serial_data_out),  // ä¸²è¡Œè¾“å‡ºæ•°æ®
+
+    .D1         (paralell_data[0]), // D1 - D8: å¹¶è¡Œæ•°æ®è¾“å…¥
     .D2         (paralell_data[1]),
     .D3         (paralell_data[2]),
     .D4         (paralell_data[3]),
@@ -44,13 +44,13 @@ OSERDESE2_Master (
     .D6         (paralell_data[5]),
     .D7         (paralell_data[6]),
     .D8         (paralell_data[7]),
-   
-    .SHIFTIN1   (cascade1),         // SHIFTIN1 ÓÃÓÚÎ»¿íÀ©Õ¹
+
+    .SHIFTIN1   (cascade1),         // SHIFTIN1 ç”¨äºä½å®½æ‰©å±•
     .SHIFTIN2   (cascade2),         // SHIFTIN2
-    .SHIFTOUT1  (),                 // SHIFTOUT1: ÓÃÓÚÎ»¿íÀ©Õ¹
+    .SHIFTOUT1  (),                 // SHIFTOUT1: ç”¨äºä½å®½æ‰©å±•
     .SHIFTOUT2  (),                 // SHIFTOUT2
-        
-    .OFB        (),                 // ÒÔÏÂÊÇÎ´Ê¹ÓÃĞÅºÅ
+
+    .OFB        (),                 // ä»¥ä¸‹æ˜¯æœªä½¿ç”¨ä¿¡å·
     .T1         (1'b0),             
     .T2         (1'b0),
     .T3         (1'b0),
@@ -61,26 +61,26 @@ OSERDESE2_Master (
     .TFB        (),                 
     .TQ         ()                  
 );
-   
-//Àı»¯OSERDESE2Ô­Óï£¬ÊµÏÖ²¢´®×ª»»,SlaveÄ£Ê½
+
+//ä¾‹åŒ–OSERDESE2åŸè¯­ï¼Œå®ç°å¹¶ä¸²è½¬æ¢,Slaveæ¨¡å¼
 OSERDESE2 #(
-    .DATA_RATE_OQ   ("DDR"),       // ÉèÖÃË«±¶Êı¾İËÙÂÊ
+    .DATA_RATE_OQ   ("DDR"),       // è®¾ç½®åŒå€æ•°æ®é€Ÿç‡
     .DATA_RATE_TQ   ("SDR"),       // DDR, BUF, SDR
-    .DATA_WIDTH     (10),           // ÊäÈëµÄ²¢ĞĞÊı¾İ¿í¶ÈÎª10bit
-    .SERDES_MODE    ("SLAVE"),     // ÉèÖÃÎªSlave£¬ÓÃÓÚ10bit¿í¶ÈÀ©Õ¹
+    .DATA_WIDTH     (10),           // è¾“å…¥çš„å¹¶è¡Œæ•°æ®å®½åº¦ä¸º10bit
+    .SERDES_MODE    ("SLAVE"),     // è®¾ç½®ä¸ºSlaveï¼Œç”¨äº10bitå®½åº¦æ‰©å±•
     .TBYTE_CTL      ("FALSE"),     // Enable tristate byte operation (FALSE, TRUE)
     .TBYTE_SRC      ("FALSE"),     // Tristate byte source (FALSE, TRUE)
     .TRISTATE_WIDTH (1)             // 3-state converter width (1,4)
 )
 OSERDESE2_Slave (
-    .CLK        (serial_clk_5x),    // ´®ĞĞÊı¾İÊ±ÖÓ,5±¶Ê±ÖÓÆµÂÊ
-    .CLKDIV     (paralell_clk),     // ²¢ĞĞÊı¾İÊ±ÖÓ
+    .CLK        (serial_clk_5x),    // ä¸²è¡Œæ•°æ®æ—¶é’Ÿ,5å€æ—¶é’Ÿé¢‘ç‡
+    .CLKDIV     (paralell_clk),     // å¹¶è¡Œæ•°æ®æ—¶é’Ÿ
     .RST        (reset),            // 1-bit input: Reset
     .OCE        (1'b1),             // 1-bit input: Output data clock enable
-    
-    .OQ         (),                 // ´®ĞĞÊä³öÊı¾İ
-    
-    .D1         (1'b0),             // D1 - D8: ²¢ĞĞÊı¾İÊäÈë
+
+    .OQ         (),                 // ä¸²è¡Œè¾“å‡ºæ•°æ®
+
+    .D1         (1'b0),             // D1 - D8: å¹¶è¡Œæ•°æ®è¾“å…¥
     .D2         (1'b0),
     .D3         (paralell_data[8]),
     .D4         (paralell_data[9]),
@@ -88,13 +88,13 @@ OSERDESE2_Slave (
     .D6         (1'b0),
     .D7         (1'b0),
     .D8         (1'b0),
-   
-    .SHIFTIN1   (),                 // SHIFTIN1 ÓÃÓÚÎ»¿íÀ©Õ¹
+
+    .SHIFTIN1   (),                 // SHIFTIN1 ç”¨äºä½å®½æ‰©å±•
     .SHIFTIN2   (),                 // SHIFTIN2
-    .SHIFTOUT1  (cascade1),         // SHIFTOUT1: ÓÃÓÚÎ»¿íÀ©Õ¹
+    .SHIFTOUT1  (cascade1),         // SHIFTOUT1: ç”¨äºä½å®½æ‰©å±•
     .SHIFTOUT2  (cascade2),         // SHIFTOUT2
-        
-    .OFB        (),                 // ÒÔÏÂÊÇÎ´Ê¹ÓÃĞÅºÅ
+
+    .OFB        (),                 // ä»¥ä¸‹æ˜¯æœªä½¿ç”¨ä¿¡å·
     .T1         (1'b0),             
     .T2         (1'b0),
     .T3         (1'b0),
@@ -105,5 +105,5 @@ OSERDESE2_Slave (
     .TFB        (),                 
     .TQ         ()                  
 );  
-        
+
 endmodule

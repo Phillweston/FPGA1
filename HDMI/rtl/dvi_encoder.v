@@ -20,7 +20,7 @@ module dvi_encoder (
 reg [3:0] n1d; //number of 1s in din
 reg [7:0] din_q;
 
-//¼ÆËãÏñËØÊı¾İÖĞ¡°1¡±µÄ¸öÊı
+//è®¡ç®—åƒç´ æ•°æ®ä¸­â€œ1â€çš„ä¸ªæ•°
 always @ (posedge clkin) begin
   n1d <=#1 din[0] + din[1] + din[2] + din[3] + din[4] + din[5] + din[6] + din[7];
 
@@ -133,5 +133,5 @@ always @ (posedge clkin or posedge rstin) begin
     end
   end
 end
-  
+
 endmodule 

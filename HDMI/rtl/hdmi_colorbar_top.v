@@ -1,10 +1,10 @@
 module  hdmi_colorbar_top(
     input        clk,
     input        rst_n,
-    
-    output       tmds_clk_p,    // TMDS Ê±ÖÓÍ¨µÀ
+
+    output       tmds_clk_p,    // TMDS æ—¶é’Ÿé€šé“
     output       tmds_clk_n,
-    output [2:0] tmds_data_p,   // TMDS Êı¾İÍ¨µÀ
+    output [2:0] tmds_data_p,   // TMDS æ•°æ®é€šé“
     output [2:0] tmds_data_n
 );
 
@@ -26,16 +26,16 @@ wire  [23:0]  video_rgb;
 //**                    main code
 //*****************************************************
 
-//Àı»¯MMCM/PLL IPºË
+//ä¾‹åŒ–MMCM/PLL IPæ ¸
 clk_wiz_0  clk_wiz_0(
     .clk_in1        (clk),
-    .clk_out1       (pixel_clk),        //ÏñËØÊ±ÖÓ
-    .clk_out2       (pixel_clk_5x),     //5±¶ÏñËØÊ±ÖÓ
-    .resetn   (rst_n), // input resetn //µÍµçÆ½¸´Î»£¬×Ô¼ºÉèÖÃ
+    .clk_out1       (pixel_clk),        //åƒç´ æ—¶é’Ÿ
+    .clk_out2       (pixel_clk_5x),     //5å€åƒç´ æ—¶é’Ÿ
+    .resetn   (rst_n), // input resetn //ä½ç”µå¹³å¤ä½ï¼Œè‡ªå·±è®¾ç½®
     .locked         (clk_locked)
 );
 
-//Àı»¯ÊÓÆµÏÔÊ¾Çı¶¯Ä£¿é
+//ä¾‹åŒ–è§†é¢‘æ˜¾ç¤ºé©±åŠ¨æ¨¡å—
 video_driver  u_video_driver(
     .pixel_clk      ( pixel_clk ),
     .rst_n          ( rst_n ),
@@ -51,7 +51,7 @@ video_driver  u_video_driver(
 	.pixel_data     ( pixel_data_w )
 );
 
-//Àı»¯ÊÓÆµÏÔÊ¾Ä£¿é
+//ä¾‹åŒ–è§†é¢‘æ˜¾ç¤ºæ¨¡å—
 video_display  u_video_display(
     .pixel_clk      (pixel_clk),
     .rst_n          (rst_n),
@@ -61,7 +61,7 @@ video_display  u_video_display(
     .pixel_data     (pixel_data_w)
     );
 
-//Àı»¯HDMIÇı¶¯Ä£¿é
+//ä¾‹åŒ–HDMIé©±åŠ¨æ¨¡å—
 dvi_transmitter_top u_rgb2dvi_0(
     .pclk           (pixel_clk),
     .pclk_x5        (pixel_clk_5x),
@@ -76,7 +76,7 @@ dvi_transmitter_top u_rgb2dvi_0(
     .tmds_clk_n     (tmds_clk_n),
     .tmds_data_p    (tmds_data_p),
     .tmds_data_n    (tmds_data_n), 
-    .tmds_oen       ()                        //Ô¤ÁôµÄ¶Ë¿Ú£¬±¾´ÎÊµÑéÎ´ÓÃµ½
+    .tmds_oen       ()                        //é¢„ç•™çš„ç«¯å£ï¼Œæœ¬æ¬¡å®éªŒæœªç”¨åˆ°
     );
 
 endmodule 

@@ -1,23 +1,23 @@
-//Òì²½¸´Î»£¬Í¬²½ÊÍ·Å£¬Í¬Ê±½«¸´Î»ĞÅºÅ¸ÄÎª¸ß
+//å¼‚æ­¥å¤ä½ï¼ŒåŒæ­¥é‡Šæ”¾ï¼ŒåŒæ—¶å°†å¤ä½ä¿¡å·æ”¹ä¸ºé«˜
 
 
 module asyn_rst_syn(
-    input clk,          //Ä¿µÄÊ±ÖÓÓò
-    input reset_n,      //Òì²½¸´Î»£¬µÍÓĞĞ§
+    input clk,          //ç›®çš„æ—¶é’ŸåŸŸ
+    input reset_n,      //å¼‚æ­¥å¤ä½ï¼Œä½æœ‰æ•ˆ
     
-    output syn_reset    //¸ßÓĞĞ§
+    output syn_reset    //é«˜æœ‰æ•ˆ
     );
-    
+
 //reg define
 reg reset_1;
 reg reset_2;
-    
+
 //*****************************************************
 //**                    main code
 //***************************************************** 
 assign syn_reset  = reset_2;
-    
-//¶ÔÒì²½¸´Î»ĞÅºÅ½øĞĞÍ¬²½ÊÍ·Å£¬²¢×ª»»³É¸ßÓĞĞ§
+
+//å¯¹å¼‚æ­¥å¤ä½ä¿¡å·è¿›è¡ŒåŒæ­¥é‡Šæ”¾ï¼Œå¹¶è½¬æ¢æˆé«˜æœ‰æ•ˆ
 always @ (posedge clk or negedge reset_n) begin
     if(!reset_n) begin
         reset_1 <= 1'b1;
@@ -28,5 +28,5 @@ always @ (posedge clk or negedge reset_n) begin
         reset_2 <= reset_1;
     end
 end
-    
+
 endmodule

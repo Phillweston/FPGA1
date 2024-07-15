@@ -1,46 +1,46 @@
 module video_driver(
     input           	pixel_clk	,
     input           	rst_n	,
-		
-    //RGB½Ó¿Ú	
-    output          	video_hs	,     //ĞĞÍ¬²½ĞÅºÅ
-    output          	video_vs	,     //³¡Í¬²½ĞÅºÅ
-    output          	video_de	,     //Êı¾İÊ¹ÄÜ
-    output  	[23:0]  video_rgb	,    //RGB888ÑÕÉ«Êı¾İ
+
+    //RGBæ¥å£	
+    output          	video_hs	,     //è¡ŒåŒæ­¥ä¿¡å·
+    output          	video_vs	,     //åœºåŒæ­¥ä¿¡å·
+    output          	video_de	,     //æ•°æ®ä½¿èƒ½
+    output  	[23:0]  video_rgb	,    //RGB888é¢œè‰²æ•°æ®
     output	reg			data_req 	,
-	
-    input   	[23:0]  pixel_data	,   //ÏñËØµãÊı¾İ
-    output  reg	[10:0]  pixel_xpos	,   //ÏñËØµãºá×ø±ê
-    output  reg	[10:0]  pixel_ypos    //ÏñËØµã×İ×ø±ê
+
+    input   	[23:0]  pixel_data	,   //åƒç´ ç‚¹æ•°æ®
+    output  reg	[10:0]  pixel_xpos	,   //åƒç´ ç‚¹æ¨ªåæ ‡
+    output  reg	[10:0]  pixel_ypos    //åƒç´ ç‚¹çºµåæ ‡
 );
 
 //parameter define
 
-//1280*720 ·Ö±æÂÊÊ±Ğò²ÎÊı
-parameter  H_SYNC   =  11'd40;   //ĞĞÍ¬²½
-parameter  H_BACK   =  11'd220;  //ĞĞÏÔÊ¾ºóÑØ
-parameter  H_DISP   =  11'd1280; //ĞĞÓĞĞ§Êı¾İ
-parameter  H_FRONT  =  11'd110;  //ĞĞÏÔÊ¾Ç°ÑØ
-parameter  H_TOTAL  =  11'd1650; //ĞĞÉ¨ÃèÖÜÆÚ
+//1280*720 åˆ†è¾¨ç‡æ—¶åºå‚æ•°
+parameter  H_SYNC   =  11'd40;   //è¡ŒåŒæ­¥
+parameter  H_BACK   =  11'd220;  //è¡Œæ˜¾ç¤ºåæ²¿
+parameter  H_DISP   =  11'd1280; //è¡Œæœ‰æ•ˆæ•°æ®
+parameter  H_FRONT  =  11'd110;  //è¡Œæ˜¾ç¤ºå‰æ²¿
+parameter  H_TOTAL  =  11'd1650; //è¡Œæ‰«æå‘¨æœŸ
 
-parameter  V_SYNC   =  11'd5;    //³¡Í¬²½
-parameter  V_BACK   =  11'd20;   //³¡ÏÔÊ¾ºóÑØ
-parameter  V_DISP   =  11'd720;  //³¡ÓĞĞ§Êı¾İ
-parameter  V_FRONT  =  11'd5;    //³¡ÏÔÊ¾Ç°ÑØ
-parameter  V_TOTAL  =  11'd750;  //³¡É¨ÃèÖÜÆÚ
+parameter  V_SYNC   =  11'd5;    //åœºåŒæ­¥
+parameter  V_BACK   =  11'd20;   //åœºæ˜¾ç¤ºåæ²¿
+parameter  V_DISP   =  11'd720;  //åœºæœ‰æ•ˆæ•°æ®
+parameter  V_FRONT  =  11'd5;    //åœºæ˜¾ç¤ºå‰æ²¿
+parameter  V_TOTAL  =  11'd750;  //åœºæ‰«æå‘¨æœŸ
 
-//1920*1080·Ö±æÂÊÊ±Ğò²ÎÊı
-//parameter  H_SYNC   =  12'd44;   //ĞĞÍ¬²½
-//parameter  H_BACK   =  12'd148;  //ĞĞÏÔÊ¾ºóÑØ
-//parameter  H_DISP   =  12'd1920; //ĞĞÓĞĞ§Êı¾İ
-//parameter  H_FRONT  =  12'd88;  //ĞĞÏÔÊ¾Ç°ÑØ
-//parameter  H_TOTAL  =  12'd2200; //ĞĞÉ¨ÃèÖÜÆÚ
+//1920*1080åˆ†è¾¨ç‡æ—¶åºå‚æ•°
+//parameter  H_SYNC   =  12'd44;   //è¡ŒåŒæ­¥
+//parameter  H_BACK   =  12'd148;  //è¡Œæ˜¾ç¤ºåæ²¿
+//parameter  H_DISP   =  12'd1920; //è¡Œæœ‰æ•ˆæ•°æ®
+//parameter  H_FRONT  =  12'd88;  //è¡Œæ˜¾ç¤ºå‰æ²¿
+//parameter  H_TOTAL  =  12'd2200; //è¡Œæ‰«æå‘¨æœŸ
 //
-//parameter  V_SYNC   =  12'd5;    //³¡Í¬²½
-//parameter  V_BACK   =  12'd36;   //³¡ÏÔÊ¾ºóÑØ
-//parameter  V_DISP   =  12'd1080;  //³¡ÓĞĞ§Êı¾İ
-//parameter  V_FRONT  =  12'd4;    //³¡ÏÔÊ¾Ç°ÑØ
-//parameter  V_TOTAL  =  12'd1125;  //³¡É¨ÃèÖÜÆÚ
+//parameter  V_SYNC   =  12'd5;    //åœºåŒæ­¥
+//parameter  V_BACK   =  12'd36;   //åœºæ˜¾ç¤ºåæ²¿
+//parameter  V_DISP   =  12'd1080;  //åœºæœ‰æ•ˆæ•°æ®
+//parameter  V_FRONT  =  12'd4;    //åœºæ˜¾ç¤ºå‰æ²¿
+//parameter  V_TOTAL  =  12'd1125;  //åœºæ‰«æå‘¨æœŸ
 
 //reg define
 reg  [11:0] cnt_h;
@@ -52,10 +52,10 @@ reg       	video_en;
 //*****************************************************
 
 assign video_de  = video_en;
-assign video_hs  = ( cnt_h < H_SYNC ) ? 1'b0 : 1'b1;  //ĞĞÍ¬²½ĞÅºÅ¸³Öµ
-assign video_vs  = ( cnt_v < V_SYNC ) ? 1'b0 : 1'b1;  //³¡Í¬²½ĞÅºÅ¸³Öµ
+assign video_hs  = ( cnt_h < H_SYNC ) ? 1'b0 : 1'b1;  //è¡ŒåŒæ­¥ä¿¡å·èµ‹å€¼
+assign video_vs  = ( cnt_v < V_SYNC ) ? 1'b0 : 1'b1;  //åœºåŒæ­¥ä¿¡å·èµ‹å€¼
 
-//Ê¹ÄÜRGBÊı¾İÊä³ö
+//ä½¿èƒ½RGBæ•°æ®è¾“å‡º
 always @(posedge pixel_clk or negedge rst_n) begin
 	if(!rst_n)
 		video_en <= 1'b0;
@@ -63,21 +63,21 @@ always @(posedge pixel_clk or negedge rst_n) begin
 		video_en <= data_req;
 end
 
-//RGB888Êı¾İÊä³ö
+//RGB888æ•°æ®è¾“å‡º
 assign video_rgb = video_de ? pixel_data : 24'd0;
 
-//ÇëÇóÏñËØµãÑÕÉ«Êı¾İÊäÈë
+//è¯·æ±‚åƒç´ ç‚¹é¢œè‰²æ•°æ®è¾“å…¥
 always @(posedge pixel_clk or negedge rst_n) begin
 	if(!rst_n)
 		data_req <= 1'b0;
 	else if(((cnt_h >= H_SYNC + H_BACK - 2'd2) && (cnt_h < H_SYNC + H_BACK + H_DISP - 2'd2))
-                  && ((cnt_v >= V_SYNC + V_BACK) && (cnt_v < V_SYNC + V_BACK+V_DISP)))
+                  && ((cnt_v >= V_SYNC + V_BACK) && (cnt_v < V_SYNC + V_BACK + V_DISP)))
 		data_req <= 1'b1;
 	else
 		data_req <= 1'b0;
 end
 
-//ÏñËØµãx×ø±ê
+//åƒç´ ç‚¹xåæ ‡
 always@ (posedge pixel_clk or negedge rst_n) begin
     if(!rst_n)
         pixel_xpos <= 11'd0;
@@ -86,8 +86,8 @@ always@ (posedge pixel_clk or negedge rst_n) begin
     else 
         pixel_xpos <= 11'd0;
 end
-    
-//ÏñËØµãy×ø±ê	
+
+//åƒç´ ç‚¹yåæ ‡	
 always@ (posedge pixel_clk or negedge rst_n) begin
     if(!rst_n)
         pixel_ypos <= 11'd0;
@@ -97,7 +97,7 @@ always@ (posedge pixel_clk or negedge rst_n) begin
         pixel_ypos <= 11'd0;
 end
 
-//ĞĞ¼ÆÊıÆ÷¶ÔÏñËØÊ±ÖÓ¼ÆÊı
+//è¡Œè®¡æ•°å™¨å¯¹åƒç´ æ—¶é’Ÿè®¡æ•°
 always @(posedge pixel_clk or negedge rst_n) begin
     if (!rst_n)
         cnt_h <= 11'd0;
@@ -109,11 +109,11 @@ always @(posedge pixel_clk or negedge rst_n) begin
     end
 end
 
-//³¡¼ÆÊıÆ÷¶ÔĞĞ¼ÆÊı
+//åœºè®¡æ•°å™¨å¯¹è¡Œè®¡æ•°
 always @(posedge pixel_clk or negedge rst_n) begin
     if (!rst_n)
         cnt_v <= 11'd0;
-    else if(cnt_h == H_TOTAL - 1'b1) begin //ĞĞ´ïµ½×î´ó
+    else if(cnt_h == H_TOTAL - 1'b1) begin //è¡Œè¾¾åˆ°æœ€å¤§
         if(cnt_v < V_TOTAL - 1'b1)
             cnt_v <= cnt_v + 1'b1;
         else 

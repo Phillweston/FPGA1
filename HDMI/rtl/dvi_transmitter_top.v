@@ -2,29 +2,29 @@ module dvi_transmitter_top(
     input        pclk,           // pixel clock
     input        pclk_x5,        // pixel clock x5
     input        reset_n,        // reset
-    
+
     input [23:0] video_din,      // RGB888 video in
     input        video_hsync,    // hsync data
     input        video_vsync,    // vsync data
     input        video_de,       // data enable
-    
-    output       tmds_clk_p,    // TMDS Ê±ÖÓÍ¨µÀ
+
+    output       tmds_clk_p,    // TMDS æ—¶é’Ÿé€šé“
     output       tmds_clk_n,
-    output [2:0] tmds_data_p,   // TMDS Êı¾İÍ¨µÀ
+    output [2:0] tmds_data_p,   // TMDS æ•°æ®é€šé“
     output [2:0] tmds_data_n,
-    output       tmds_oen       // TMDS Êä³öÊ¹ÄÜ
+    output       tmds_oen       // TMDS è¾“å‡ºä½¿èƒ½
     );
-    
+
 //wire define    
 wire        reset;
-    
-//²¢ĞĞÊı¾İ
+
+//å¹¶è¡Œæ•°æ®
 wire [9:0]  red_10bit;
 wire [9:0]  green_10bit;
 wire [9:0]  blue_10bit;
 wire [9:0]  clk_10bit;  
-  
-//´®ĞĞÊı¾İ
+
+//ä¸²è¡Œæ•°æ®
 wire [2:0]  tmds_data_serial;
 wire        tmds_clk_serial;
 
@@ -34,15 +34,15 @@ wire        tmds_clk_serial;
 assign tmds_oen = 1'b1;  
 assign clk_10bit = 10'b1111100000;
 
-//Òì²½¸´Î»£¬Í¬²½ÊÍ·Å
+//å¼‚æ­¥å¤ä½ï¼ŒåŒæ­¥é‡Šæ”¾
 asyn_rst_syn reset_syn(
     .reset_n    (reset_n),
     .clk        (pclk),
     
-    .syn_reset  (reset)    //¸ßÓĞĞ§
+    .syn_reset  (reset)    //é«˜æœ‰æ•ˆ
     );
-  
-//¶ÔÈı¸öÑÕÉ«Í¨µÀ½øĞĞ±àÂë
+
+//å¯¹ä¸‰ä¸ªé¢œè‰²é€šé“è¿›è¡Œç¼–ç 
 dvi_encoder encoder_b (
     .clkin      (pclk),
     .rstin	    (reset),
@@ -64,7 +64,7 @@ dvi_encoder encoder_g (
     .de			(video_de),
     .dout		(green_10bit)
     ) ;
-    
+
 dvi_encoder encoder_r (
     .clkin      (pclk),
     .rstin	    (reset),
@@ -75,17 +75,17 @@ dvi_encoder encoder_r (
     .de			(video_de),
     .dout		(red_10bit)
     ) ;
-    
-//¶Ô±àÂëºóµÄÊı¾İ½øĞĞ²¢´®×ª»»
-serializer_10_to_1 serializer_b(
-    .reset              (reset),                // ¸´Î»,¸ßÓĞĞ§
-    .paralell_clk       (pclk),                 // ÊäÈë²¢ĞĞÊı¾İÊ±ÖÓ
-    .serial_clk_5x      (pclk_x5),              // ÊäÈë´®ĞĞÊı¾İÊ±ÖÓ
-    .paralell_data      (blue_10bit),           // ÊäÈë²¢ĞĞÊı¾İ
 
-    .serial_data_out    (tmds_data_serial[0])   // Êä³ö´®ĞĞÊı¾İ
+//å¯¹ç¼–ç åçš„æ•°æ®è¿›è¡Œå¹¶ä¸²è½¬æ¢
+serializer_10_to_1 serializer_b(
+    .reset              (reset),                // å¤ä½,é«˜æœ‰æ•ˆ
+    .paralell_clk       (pclk),                 // è¾“å…¥å¹¶è¡Œæ•°æ®æ—¶é’Ÿ
+    .serial_clk_5x      (pclk_x5),              // è¾“å…¥ä¸²è¡Œæ•°æ®æ—¶é’Ÿ
+    .paralell_data      (blue_10bit),           // è¾“å…¥å¹¶è¡Œæ•°æ®
+
+    .serial_data_out    (tmds_data_serial[0])   // è¾“å‡ºä¸²è¡Œæ•°æ®
     );    
-    
+
 serializer_10_to_1 serializer_g(
     .reset              (reset),
     .paralell_clk       (pclk),
@@ -94,7 +94,7 @@ serializer_10_to_1 serializer_g(
 
     .serial_data_out    (tmds_data_serial[1])
     );
-    
+
 serializer_10_to_1 serializer_r(
     .reset              (reset),
     .paralell_clk       (pclk),
@@ -103,7 +103,7 @@ serializer_10_to_1 serializer_r(
 
     .serial_data_out    (tmds_data_serial[2])
     );
-            
+
 serializer_10_to_1 serializer_clk(
     .reset              (reset),
     .paralell_clk       (pclk),
@@ -112,10 +112,10 @@ serializer_10_to_1 serializer_clk(
 
     .serial_data_out    (tmds_clk_serial)
     );
-    
-//×ª»»²î·ÖĞÅºÅ  
+
+//è½¬æ¢å·®åˆ†ä¿¡å·  
 OBUFDS #(
-    .IOSTANDARD         ("TMDS_33")    // I/OµçÆ½±ê×¼ÎªTMDS
+    .IOSTANDARD         ("TMDS_33")    // I/Oç”µå¹³æ ‡å‡†ä¸ºTMDS
 ) TMDS0 (
     .I                  (tmds_data_serial[0]),
     .O                  (tmds_data_p[0]),
@@ -123,7 +123,7 @@ OBUFDS #(
 );
 
 OBUFDS #(
-    .IOSTANDARD         ("TMDS_33")    // I/OµçÆ½±ê×¼ÎªTMDS
+    .IOSTANDARD         ("TMDS_33")    // I/Oç”µå¹³æ ‡å‡†ä¸ºTMDS
 ) TMDS1 (
     .I                  (tmds_data_serial[1]),
     .O                  (tmds_data_p[1]),
@@ -131,7 +131,7 @@ OBUFDS #(
 );
 
 OBUFDS #(
-    .IOSTANDARD         ("TMDS_33")    // I/OµçÆ½±ê×¼ÎªTMDS
+    .IOSTANDARD         ("TMDS_33")    // I/Oç”µå¹³æ ‡å‡†ä¸ºTMDS
 ) TMDS2 (
     .I                  (tmds_data_serial[2]), 
     .O                  (tmds_data_p[2]), 
@@ -139,11 +139,11 @@ OBUFDS #(
 );
 
 OBUFDS #(
-    .IOSTANDARD         ("TMDS_33")    // I/OµçÆ½±ê×¼ÎªTMDS
+    .IOSTANDARD         ("TMDS_33")    // I/Oç”µå¹³æ ‡å‡†ä¸ºTMDS
 ) TMDS3 (
     .I                  (tmds_clk_serial), 
     .O                  (tmds_clk_p),
     .OB                 (tmds_clk_n) 
 );
-  
+
 endmodule

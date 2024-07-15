@@ -1,27 +1,27 @@
 module  video_display(
     input                pixel_clk,
     input                rst_n,
-    
-    input        [10:0]  pixel_xpos,  //ÏñËØµãºá×ø±ê
-    input        [10:0]  pixel_ypos,  //ÏñËØµã×İ×ø±ê
-    output  reg  [23:0]  pixel_data   //ÏñËØµãÊı¾İ
+
+    input        [10:0]  pixel_xpos,  //åƒç´ ç‚¹æ¨ªåæ ‡
+    input        [10:0]  pixel_ypos,  //åƒç´ ç‚¹çºµåæ ‡
+    output  reg  [23:0]  pixel_data   //åƒç´ ç‚¹æ•°æ®
 );
 
 //parameter define
-parameter  H_DISP = 11'd1280;                       //·Ö±æÂÊ¡ª¡ªĞĞ
-parameter  V_DISP = 11'd720;                        //·Ö±æÂÊ¡ª¡ªÁĞ
+parameter  H_DISP = 11'd1280;                       //åˆ†è¾¨ç‡â€”â€”è¡Œ
+parameter  V_DISP = 11'd720;                        //åˆ†è¾¨ç‡â€”â€”åˆ—
 
-localparam WHITE  = 24'b11111111_11111111_11111111;  //RGB888 °×É«
-localparam BLACK  = 24'b00000000_00000000_00000000;  //RGB888 ºÚÉ«
-localparam RED    = 24'b11111111_00001100_00000000;  //RGB888 ºìÉ«
-localparam GREEN  = 24'b00000000_11111111_00000000;  //RGB888 ÂÌÉ«
-localparam BLUE   = 24'b00000000_00000000_11111111;  //RGB888 À¶É«
-    
+localparam WHITE  = 24'b11111111_11111111_11111111;  //RGB888 ç™½è‰²
+localparam BLACK  = 24'b00000000_00000000_00000000;  //RGB888 é»‘è‰²
+localparam RED    = 24'b11111111_00001100_00000000;  //RGB888 çº¢è‰²
+localparam GREEN  = 24'b00000000_11111111_00000000;  //RGB888 ç»¿è‰²
+localparam BLUE   = 24'b00000000_00000000_11111111;  //RGB888 è“è‰²
+
 //*****************************************************
 //**                    main code
 //*****************************************************
 
-//¸ù¾İµ±Ç°ÏñËØµã×ø±êÖ¸¶¨µ±Ç°ÏñËØµãÑÕÉ«Êı¾İ£¬ÔÚÆÁÄ»ÉÏÏÔÊ¾²ÊÌõ
+//æ ¹æ®å½“å‰åƒç´ ç‚¹åæ ‡æŒ‡å®šå½“å‰åƒç´ ç‚¹é¢œè‰²æ•°æ®ï¼Œåœ¨å±å¹•ä¸Šæ˜¾ç¤ºå½©æ¡
 always @(posedge pixel_clk ) begin
     if (!rst_n)
         pixel_data <= 16'd0;
